@@ -3,24 +3,37 @@ package com.pet_love.demo.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "owner")
-public class Owner {
+@Table(name = "person")
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="per_id")
     private Long id;
-    private String nome;
-    private String telefone;
-    private String email;
 
-    public Owner() {
+    @Column(name="per_nome")
+    private String nome;
+
+    @Column(name="per_cpf")
+    private String cpf;
+
+    @Column(name="per_telefone")
+    private String telefone;
+
+    @Column(name="per_cidade")
+    private String cidade;
+
+    //todo criar lista de Pet
+
+    public Person() {
     }
 
-    public Owner(Long id, String nome, String telefone, String email) {
+    public Person(Long id, String nome, String telefone, String cpf, String cidade) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
-        this.email = email;
+        this.cpf = cpf;
+        this.cidade = cidade;
     }
 
     public Long getId() {
@@ -47,11 +60,19 @@ public class Owner {
         this.telefone = telefone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 }
