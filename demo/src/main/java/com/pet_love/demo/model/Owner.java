@@ -12,6 +12,7 @@ public class Owner {
     private String nome;
     private String telefone;
     private String email;
+    private String senha;
 
     public Owner() {
     }
