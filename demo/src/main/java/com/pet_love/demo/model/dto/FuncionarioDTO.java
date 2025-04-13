@@ -1,28 +1,27 @@
 package com.pet_love.demo.model.dto;
 
-import java.util.List;
-
-public class PessoaDTO {
+public class FuncionarioDTO {
     private Long id;
     private String nome;
     private String cpf;
     private String cidade;
     private String telefone;
     private String email;
+    private String crmv;
+    private String funcao;
 
-    private List<Long> petsIds;
-
-    public PessoaDTO() {
+    public FuncionarioDTO() {
     }
 
-    public PessoaDTO(Long id, String nome, String cpf, String cidade, String telefone, String email, List<Long> petsIds) {
+    public FuncionarioDTO(Long id, String nome, String cpf, String cidade, String telefone, String email, String crmv, String funcao) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
         this.cidade = cidade;
         this.telefone = telefone;
         this.email = email;
-        this.petsIds = petsIds;
+        this.crmv = crmv;
+        this.funcao = funcao;
     }
 
     public Long getId() {
@@ -73,12 +72,19 @@ public class PessoaDTO {
         this.email = email;
     }
 
-    public List<Long> getPetsIds() {
-        return petsIds;
+    public String getCrmv() {
+        return crmv;
     }
 
-    public void setPetsIds(List<Long> petsIds) {
-        this.petsIds = petsIds;
+    public void setCrmv(String crmv) {
+        this.crmv = crmv;
     }
 
+    public String getFuncao() {
+        return funcao;
+    }
+
+    public void setFuncao(String funcao) {
+        this.funcao = funcao;
+    }
 }

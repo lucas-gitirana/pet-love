@@ -3,6 +3,7 @@ package com.pet_love.demo.model.dto;
 import java.util.List;
 
 public class PetDTO {
+    private Long id;
     private String nome;
     private String dataNascimento;
     private String observacoes;
@@ -10,6 +11,28 @@ public class PetDTO {
     private Long especieId;
     private Long racaId;
     private List<PessoaPetDTO> donos;
+
+    public PetDTO() {
+    }
+
+    public PetDTO(Long id, String nome, String dataNascimento, String observacoes, String foto, Long especieId, Long racaId, List<PessoaPetDTO> donos) {
+        this.id = id;
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
+        this.observacoes = observacoes;
+        this.foto = foto;
+        this.especieId = especieId;
+        this.racaId = racaId;
+        this.donos = donos;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;

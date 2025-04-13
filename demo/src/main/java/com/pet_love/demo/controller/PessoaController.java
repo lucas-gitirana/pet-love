@@ -42,8 +42,7 @@ public class PessoaController{
 
         // Atualiza os dados
         pessoaDTO.setId(id); // Garante que o ID seja mantido
-        PessoaDTO updatedPessoa = pessoaService.savePessoa(pessoaDTO);
-
+        PessoaDTO updatedPessoa = pessoaService.updatePessoa(pessoaDTO);
         return ResponseEntity.ok(updatedPessoa);
     }
 

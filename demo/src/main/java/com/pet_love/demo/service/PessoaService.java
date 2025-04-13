@@ -47,7 +47,19 @@ public class PessoaService {
 
     public PessoaDTO savePessoa(PessoaDTO pessoaDTO) {
         Pessoa pessoa = new Pessoa();
-        // Converter de DTO para Entidade Pessoa
+        pessoa.setNome(pessoaDTO.getNome());
+        pessoa.setCpf(pessoaDTO.getCpf());
+        pessoa.setCidade(pessoaDTO.getCidade());
+        pessoa.setTelefone(pessoaDTO.getTelefone());
+        pessoa.setEmail(pessoaDTO.getEmail());
+
+        Pessoa savedPessoa = pessoaRepository.save(pessoa);
+        return convertToDTO(savedPessoa);  // Retorna o DTO da pessoa salva
+    }
+
+    public PessoaDTO updatePessoa(PessoaDTO pessoaDTO) {
+        Pessoa pessoa = new Pessoa();
+        pessoa.setId(pessoaDTO.getId());
         pessoa.setNome(pessoaDTO.getNome());
         pessoa.setCpf(pessoaDTO.getCpf());
         pessoa.setCidade(pessoaDTO.getCidade());

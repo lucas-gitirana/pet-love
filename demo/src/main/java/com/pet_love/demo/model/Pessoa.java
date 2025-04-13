@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pessoa")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Pessoa {
 
     @Id

@@ -68,20 +68,14 @@ public class PetController {
     }
 
     @PutMapping("/pets/{id}")
-    public ResponseEntity<Pet> editPet(@PathVariable Long id, @RequestBody Pet pet) {
+    public ResponseEntity<Pet> editPet(@PathVariable Long id, @RequestBody PetDTO petDTO) {
         Pet oldPet = petService.getPetById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pet não encontrado com ID: " + id));
 
-        oldPet.setNome(pet.getNome());
-        oldPet.setDataNascimento(pet.getDataNascimento());
-        oldPet.setObservacoes(pet.getObservacoes());
-        oldPet.setFoto(pet.getFoto());
-        oldPet.setRaca(pet.getRaca());
-        oldPet.setEspecie(pet.getEspecie());
-        oldPet.setDonos(pet.getDonos());
-
-        petService.savePet(oldPet);
-        return ResponseEntity.ok(oldPet);
+        // Atualiza os dados
+        petDTO.setId(oldPet.getId());
+        Pet petAtualiado = petService.updatePet(petDTO); // Garante que o ID seja mantido
+        return ResponseEntity.status(HttpStatus.CREATED).body(petAtualiado);
     }
 
     @DeleteMapping("pets/{id}")
