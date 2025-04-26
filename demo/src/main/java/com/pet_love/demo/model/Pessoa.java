@@ -1,6 +1,5 @@
 package com.pet_love.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ public class Pessoa {
     @Column(name="pes_email", nullable = false)
     private String email;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "pessoa")
     private List<PessoaPet> pets = new ArrayList<>();
 

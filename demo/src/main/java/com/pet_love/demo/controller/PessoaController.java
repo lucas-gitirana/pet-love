@@ -37,11 +37,11 @@ public class PessoaController{
 
     @PutMapping("/pessoas/{id}")
     public ResponseEntity<PessoaDTO> editPessoa(@PathVariable Long id, @RequestBody PessoaDTO pessoaDTO) {
-        PessoaDTO existingPessoa = pessoaService.getPessoaById(id)
+        pessoaService.getPessoaById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa não encontrada com ID: " + id));
 
         // Atualiza os dados
-        pessoaDTO.setId(id); // Garante que o ID seja mantido
+        pessoaDTO.setId(id);
         PessoaDTO updatedPessoa = pessoaService.updatePessoa(pessoaDTO);
         return ResponseEntity.ok(updatedPessoa);
     }

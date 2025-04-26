@@ -1,5 +1,8 @@
 package com.pet_love.demo.model.dto;
 
+import com.pet_love.demo.model.Especie;
+import com.pet_love.demo.model.Raca;
+
 import java.util.List;
 
 public class PetDTO {
@@ -8,21 +11,21 @@ public class PetDTO {
     private String dataNascimento;
     private String observacoes;
     private String foto;
-    private Long especieId;
-    private Long racaId;
     private List<PessoaPetDTO> donos;
+    private Especie especie;
+    private Raca raca;
 
     public PetDTO() {
     }
 
-    public PetDTO(Long id, String nome, String dataNascimento, String observacoes, String foto, Long especieId, Long racaId, List<PessoaPetDTO> donos) {
+    public PetDTO(Long id, String nome, String dataNascimento, String observacoes, String foto, Especie especie, Raca raca, List<PessoaPetDTO> donos) {
         this.id = id;
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.observacoes = observacoes;
         this.foto = foto;
-        this.especieId = especieId;
-        this.racaId = racaId;
+        this.especie = especie;
+        this.raca = raca;
         this.donos = donos;
     }
 
@@ -66,27 +69,41 @@ public class PetDTO {
         this.foto = foto;
     }
 
-    public Long getEspecieId() {
-        return especieId;
-    }
-
-    public void setEspecieId(Long especieId) {
-        this.especieId = especieId;
-    }
-
-    public Long getRacaId() {
-        return racaId;
-    }
-
-    public void setRacaId(Long racaId) {
-        this.racaId = racaId;
-    }
-
     public List<PessoaPetDTO> getDonos() {
         return donos;
     }
 
     public void setDonos(List<PessoaPetDTO> donos) {
         this.donos = donos;
+    }
+
+    public Especie getEspecie() {
+        return especie;
+    }
+
+    public void setEspecie(Especie especie) {
+        this.especie = especie;
+    }
+
+    public Raca getRaca() {
+        return raca;
+    }
+
+    public void setRaca(Raca raca) {
+        this.raca = raca;
+    }
+
+    @Override
+    public String toString() {
+        return "PetDTO{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", dataNascimento='" + dataNascimento + '\'' +
+                ", observacoes='" + observacoes + '\'' +
+                ", foto='" + foto + '\'' +
+                ", donos=" + donos +
+                ", especie=" + especie +
+                ", raca=" + raca +
+                '}';
     }
 }

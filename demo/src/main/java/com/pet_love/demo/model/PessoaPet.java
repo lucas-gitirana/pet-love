@@ -1,5 +1,6 @@
 package com.pet_love.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -17,6 +18,7 @@ public class PessoaPet {
     @ManyToOne()
     @JoinColumn(name="pet_id", nullable = false)
     @JsonIgnore
+    @JsonBackReference
     private Pet pet;
 
     @Column(name="pp_principal")
@@ -58,9 +60,10 @@ public class PessoaPet {
     @Override
     public String toString() {
         return "PessoaPet{" +
-                "pessoa=" + pessoa +
-                ", pet=" + pet +
+                "pessoaId=" + (pessoa != null ? pessoa.getId() : null) +
+                ", petId=" + (pet != null ? pet.getId() : null) +
                 ", principal=" + principal +
                 '}';
     }
+
 }

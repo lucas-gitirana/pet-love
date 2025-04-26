@@ -1,11 +1,14 @@
 package com.pet_love.demo.service;
 
 import com.pet_love.demo.model.*;
+import com.pet_love.demo.model.dto.PessoaDTO;
+import com.pet_love.demo.model.dto.PessoaPetDTO;
 import com.pet_love.demo.model.dto.PetDTO;
 import com.pet_love.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,59 +31,83 @@ public class PetService {
     @Autowired
     private PessoaPetRepository pessoaPetRepository;
 
-    public List<Pet> getAllPets() {
-        return petRepository.findAll();
+    /**
+     * Método para converter um objeto da classe Pet para PetDTO
+     * @param pet
+     * @return
+     */
+    public static PetDTO convertToDTO(Pet pet) {
+        List<PessoaPetDTO> donosDTO = pet.getDonos().stream()
+                .map(PessoaPetService::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new PetDTO(
+                pet.getId(),
+                pet.getNome(),
+                pet.getDataNascimento(),
+                pet.getObservacoes(),
+                pet.getFoto(),
+                pet.getEspecie(),
+                pet.getRaca(),
+                donosDTO
+        );
+    }
+
+    /**
+     * Método para converter um objeto da classe PessoaDTO para Pessoa
+     * @param petDTO
+     * @return
+     */
+    public static Pet convertFromDTO(PetDTO petDTO, PessoaRepository pessoaRepository) {
+
+        Pet pet = new Pet();
+        pet.setId(petDTO.getId());
+        pet.setNome(petDTO.getNome());
+        pet.setDataNascimento(petDTO.getDataNascimento());
+        pet.setFoto(petDTO.getFoto());
+        pet.setObservacoes(petDTO.getObservacoes());
+        pet.setRaca(petDTO.getRaca());
+        pet.setEspecie(petDTO.getEspecie());
+        return pet;
+    }
+
+    public List<PetDTO> getAllPets() {
+        List<Pet> pets = petRepository.findAll();
+        return pets.stream()
+                .map(PetService::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public Optional<Pet> getPetById(Long id) {
         return petRepository.findById(id);
     }
 
-    public List<Pet> buscarPetsPorPessoa(Long pessoaId) {
+    public Optional<PetDTO> getPetByIdV2(Long id) {
+        Optional<Pet> pet = petRepository.findById(id);
+        return pet.map(PetService::convertToDTO);
+    }
+
+    public List<PetDTO> buscarPetsPorPessoa(Long pessoaId) {
         List<PessoaPet> pessoaPets = pessoaPetRepository.findByPessoaId(pessoaId);
         return pessoaPets.stream()
-                .map(PessoaPet::getPet)
+                .map(p -> convertToDTO(p.getPet()))
                 .collect(Collectors.toList());
     }
 
-    public Optional<Pessoa> buscarDonoPrincipal(Long petId) {
+    public Optional<PessoaDTO> buscarDonoPrincipal(Long petId) {
         return pessoaPetRepository.findByPetIdAndPrincipalTrue(petId)
-                .map(PessoaPet::getPessoa);
+                .map(pessoaPet -> PessoaService.convertToDTO(pessoaPet.getPessoa()));
     }
 
-    public Pet salvarPetComDTO(PetDTO dto) {
-        Pet pet = new Pet();
-        pet.setNome(dto.getNome());
-        pet.setDataNascimento(dto.getDataNascimento());
-        pet.setObservacoes(dto.getObservacoes());
-        pet.setFoto(dto.getFoto());
+    public PetDTO savePet(PetDTO petDTO) {
+        Optional<Especie> especie = especieRepository.findById(petDTO.getEspecie().getId());
+        especie.ifPresent(petDTO::setEspecie);
 
-        // Buscar espécie e raça
-        Especie especie = especieRepository.findById(dto.getEspecieId())
-                .orElseThrow(() -> new RuntimeException("Espécie não encontrada"));
-        pet.setEspecie(especie);
+        Optional<Raca> raca = racaRepository.findById(petDTO.getRaca().getId());
+        raca.ifPresent(petDTO::setRaca);
 
-        if (dto.getRacaId() != null) {
-            Raca raca = racaRepository.findById(dto.getRacaId())
-                    .orElseThrow(() -> new RuntimeException("Raça não encontrada"));
-            pet.setRaca(raca);
-        }
-
-        // Salvar pet primeiro para ter o ID
-        Pet petSalvo = petRepository.save(pet);
-
-        // Agora cria as novas ligações com os donos
-        List<PessoaPet> donos = dto.getDonos().stream().map(p -> {
-            Pessoa pessoa = pessoaRepository.findById(p.getPessoaId())
-                    .orElseThrow(() -> new RuntimeException("Pessoa não encontrada"));
-            return new PessoaPet(pessoa, petSalvo, p.isPrincipal());
-        }).toList();
-
-        // Salva PessoaPet
-        pessoaPetRepository.saveAll(donos);
-        petSalvo.setDonos(donos);
-
-        return petSalvo;
+        Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
+        return convertToDTO(savedPet);
     }
 
     public Pet updatePet(PetDTO dto) {
@@ -92,7 +119,7 @@ public class PetService {
         pet.setFoto(dto.getFoto());
 
         // Buscar espécie e raça
-        Especie especie = especieRepository.findById(dto.getEspecieId())
+        /*Especie especie = especieRepository.findById(dto.getEspecieId())
                 .orElseThrow(() -> new RuntimeException("Espécie não encontrada"));
         pet.setEspecie(especie);
 
@@ -100,7 +127,7 @@ public class PetService {
             Raca raca = racaRepository.findById(dto.getRacaId())
                     .orElseThrow(() -> new RuntimeException("Raça não encontrada"));
             pet.setRaca(raca);
-        }
+        }*/
 
         //Apagamos todas as relações entre pet e dono antes de atualizar
         for (PessoaPet pp : pet.getDonos()) {
@@ -122,6 +149,34 @@ public class PetService {
         petSalvo.setDonos(donos);
 
         return petSalvo;
+    }
+
+    public PetDTO updatePetV2(PetDTO petDTO) {
+        Optional<Especie> especie = especieRepository.findById(petDTO.getEspecie().getId());
+        especie.ifPresent(petDTO::setEspecie);
+
+        Optional<Raca> raca = racaRepository.findById(petDTO.getRaca().getId());
+        raca.ifPresent(petDTO::setRaca);
+
+        Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
+        petRepository.flush();
+
+        List<PessoaPet> donos = new ArrayList<>();
+        for (PessoaPetDTO pp : petDTO.getDonos()) {
+            Optional<Pessoa> pessoa = pessoaRepository.findById(pp.getPessoaId());
+            if (pessoa.isPresent()) {
+                PessoaPet pessoaPet = new PessoaPet();
+                pessoaPet.setPessoa(pessoa.get());
+                pessoaPet.setPet(savedPet);
+                pessoaPet.setPrincipal(pp.isPrincipal());
+                donos.add(pessoaPet);
+            }
+        }
+        savedPet.setDonos(donos);
+        petRepository.save(savedPet);
+
+
+        return convertToDTO(savedPet);
     }
 
     public void deletePet(Long id) {

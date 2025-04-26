@@ -1,5 +1,6 @@
 package com.pet_love.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Pet {
     @JoinColumn(name="rac_id")
     private Raca raca;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "pet")
     private List<PessoaPet> donos = new ArrayList<>();
 
@@ -113,6 +115,10 @@ public class Pet {
 
     public void setDonos(List<PessoaPet> donos) {
         this.donos = donos;
+    }
+
+    public void addDono(PessoaPet pessoaPet) {
+        this.donos.add(pessoaPet);
     }
 
     @Override

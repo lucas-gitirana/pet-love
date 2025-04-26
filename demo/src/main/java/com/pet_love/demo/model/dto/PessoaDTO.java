@@ -9,7 +9,6 @@ public class PessoaDTO {
     private String cidade;
     private String telefone;
     private String email;
-
     private List<Long> petsIds;
 
     public PessoaDTO() {
