@@ -51,7 +51,6 @@ public class PessoaController{
         if (pessoaService.getPessoaById(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa não encontrada com ID: " + id);
         }
-
         pessoaService.deletePessoa(id);
         return ResponseEntity.noContent().build();
     }

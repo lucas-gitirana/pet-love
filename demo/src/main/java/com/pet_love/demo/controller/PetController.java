@@ -1,7 +1,5 @@
 package com.pet_love.demo.controller;
 
-import com.pet_love.demo.model.Especie;
-import com.pet_love.demo.model.Pet;
 import com.pet_love.demo.model.dto.PessoaDTO;
 import com.pet_love.demo.model.dto.PetDTO;
 import com.pet_love.demo.service.PetService;
@@ -27,7 +25,7 @@ public class PetController {
 
     @GetMapping("pets/{id}")
     public ResponseEntity<PetDTO> getPetById(@PathVariable Long id) {
-        return petService.getPetByIdV2(id)
+        return petService.getPetById(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pet não encontrado com ID: " + id));
     }
@@ -52,18 +50,23 @@ public class PetController {
 
     @PutMapping("/pets/{id}")
     public ResponseEntity<PetDTO> editPet(@PathVariable Long id, @RequestBody PetDTO petDTO) {
-        petService.getPetByIdV2(id)
+        petService.getPetById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pet não encontrado com ID: " + id));
 
         // Atualiza os dados
         petDTO.setId(id);
-        PetDTO updatedPet = petService.updatePetV2(petDTO);
+        PetDTO updatedPet = petService.updatePet(petDTO);
         return ResponseEntity.ok(updatedPet);
     }
 
     @DeleteMapping("pets/{id}")
-    public void deletePet(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePet(@PathVariable Long id) {
+        if (petService.getPetById(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pet não encontrado com ID: " + id);
+        }
+
         petService.deletePet(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

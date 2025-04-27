@@ -3,85 +3,78 @@ package com.pet_love.demo.service;
 import com.pet_love.demo.model.Funcionario;
 import com.pet_love.demo.model.dto.FuncionarioDTO;
 import com.pet_love.demo.repository.FuncionarioRepository;
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class FuncionarioService {
 
-    private final FuncionarioRepository funcionarioRepository;
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
 
-    public FuncionarioService(FuncionarioRepository funcionarioRepository) {
-        this.funcionarioRepository = funcionarioRepository;
+    /**
+     * Método para converter um objeto da classe Funcionario para FuncionarioDTO
+     * @param funcionario
+     * @return
+     */
+    public static FuncionarioDTO convertToDTO(Funcionario funcionario) {
+        return new FuncionarioDTO(
+                funcionario.getId(),
+                funcionario.getNome(),
+                funcionario.getCpf(),
+                funcionario.getCidade(),
+                funcionario.getTelefone(),
+                funcionario.getEmail(),
+                funcionario.getCrmv(),
+                funcionario.getFuncao()
+        );
     }
 
-    public List<FuncionarioDTO> listarTodos() {
-        return funcionarioRepository.findAll()
-                .stream()
-                .map(this::toDTO)
+    /**
+     * Método para converter um objeto da classe FuncionarioDTO para Funcionario
+     * @param funcionarioDTO
+     * @return
+     */
+    public static Funcionario convertFromDTO(FuncionarioDTO funcionarioDTO) {
+        Funcionario funcionario = new Funcionario();
+        funcionario.setId(funcionarioDTO.getId());
+        funcionario.setNome(funcionarioDTO.getNome());
+        funcionario.setCpf(funcionarioDTO.getCpf());
+        funcionario.setCidade(funcionarioDTO.getCidade());
+        funcionario.setTelefone(funcionarioDTO.getTelefone());
+        funcionario.setEmail(funcionarioDTO.getEmail());
+        funcionario.setCrmv(funcionarioDTO.getCrmv());
+        funcionario.setFuncao(funcionarioDTO.getFuncao());
+        return funcionario;
+    }
+
+    public List<FuncionarioDTO> getAllFuncionarios() {
+        List<Funcionario> funcionarios = funcionarioRepository.findAll();
+        return funcionarios.stream()
+                .map(FuncionarioService::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public FuncionarioDTO buscarPorId(Long id) {
-        Funcionario funcionario = funcionarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado"));
-        return toDTO(funcionario);
+    public Optional<FuncionarioDTO> getFuncionarioById(Long id) {
+        Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
+        return funcionario.map(FuncionarioService::convertToDTO);
     }
 
-    public FuncionarioDTO criar(FuncionarioDTO dto) {
-        Funcionario funcionario = toEntity(dto);
-        return toDTO(funcionarioRepository.save(funcionario));
+    public FuncionarioDTO saveFuncionario(FuncionarioDTO funcionarioDTO) {
+        Funcionario savedFuncionario = funcionarioRepository.save(convertFromDTO(funcionarioDTO));
+        return convertToDTO(savedFuncionario);
     }
 
-    public FuncionarioDTO atualizar(Long id, FuncionarioDTO dto) {
-        Funcionario funcionario = funcionarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado"));
-
-        funcionario.setNome(dto.getNome());
-        funcionario.setCpf(dto.getCpf());
-        funcionario.setCidade(dto.getCidade());
-        funcionario.setTelefone(dto.getTelefone());
-        funcionario.setEmail(dto.getEmail());
-        funcionario.setCrmv(dto.getCrmv());
-        funcionario.setFuncao(dto.getFuncao());
-
-        return toDTO(funcionarioRepository.save(funcionario));
+    public FuncionarioDTO updateFuncionario(FuncionarioDTO funcionarioDTO) {
+        Funcionario savedFuncionario = funcionarioRepository.save(convertFromDTO(funcionarioDTO));
+        return convertToDTO(savedFuncionario);
     }
 
-    public void deletar(Long id) {
-        if (!funcionarioRepository.existsById(id)) {
-            throw new EntityNotFoundException("Funcionário não encontrado");
-        }
+    public void deleteFuncionario(Long id) {
         funcionarioRepository.deleteById(id);
-    }
-
-    // Conversões
-    private FuncionarioDTO toDTO(Funcionario f) {
-        FuncionarioDTO dto = new FuncionarioDTO();
-        dto.setId(f.getId());
-        dto.setNome(f.getNome());
-        dto.setCpf(f.getCpf());
-        dto.setCidade(f.getCidade());
-        dto.setTelefone(f.getTelefone());
-        dto.setEmail(f.getEmail());
-        dto.setCrmv(f.getCrmv());
-        dto.setFuncao(f.getFuncao());
-        return dto;
-    }
-
-    private Funcionario toEntity(FuncionarioDTO dto) {
-        Funcionario f = new Funcionario();
-        f.setId(dto.getId());
-        f.setNome(dto.getNome());
-        f.setCpf(dto.getCpf());
-        f.setCidade(dto.getCidade());
-        f.setTelefone(dto.getTelefone());
-        f.setEmail(dto.getEmail());
-        f.setCrmv(dto.getCrmv());
-        f.setFuncao(dto.getFuncao());
-        return f;
     }
 }

@@ -2,44 +2,56 @@ package com.pet_love.demo.controller;
 
 import com.pet_love.demo.model.dto.FuncionarioDTO;
 import com.pet_love.demo.service.FuncionarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/funcionarios")
+@RequestMapping("/api")
 public class FuncionarioController {
 
-    private final FuncionarioService funcionarioService;
+    @Autowired
+    private FuncionarioService funcionarioService;
 
-    public FuncionarioController(FuncionarioService funcionarioService) {
-        this.funcionarioService = funcionarioService;
+    @GetMapping("/funcionarios")
+    public List<FuncionarioDTO> getAllFuncionarios() {
+        return funcionarioService.getAllFuncionarios();
     }
 
-    @GetMapping
-    public ResponseEntity<List<FuncionarioDTO>> listarTodos() {
-        return ResponseEntity.ok(funcionarioService.listarTodos());
+    @GetMapping("/funcionarios/{id}")
+    public ResponseEntity<FuncionarioDTO> getFuncionarioById(@PathVariable Long id) {
+        return funcionarioService.getFuncionarioById(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado com ID: " + id));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FuncionarioDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(funcionarioService.buscarPorId(id));
-    }
-
-    @PostMapping
-    public ResponseEntity<FuncionarioDTO> criar(@RequestBody FuncionarioDTO dto) {
-        return ResponseEntity.ok(funcionarioService.criar(dto));
+    @PostMapping("/funcionarios")
+    public ResponseEntity<FuncionarioDTO> addFuncionario(@RequestBody FuncionarioDTO funcionarioDTO) {
+        FuncionarioDTO savedFuncionario = funcionarioService.saveFuncionario(funcionarioDTO);
+        return new ResponseEntity<>(savedFuncionario, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FuncionarioDTO> atualizar(@PathVariable Long id, @RequestBody FuncionarioDTO dto) {
-        return ResponseEntity.ok(funcionarioService.atualizar(id, dto));
+    public ResponseEntity<FuncionarioDTO> atualizar(@PathVariable Long id, @RequestBody FuncionarioDTO funcionarioDTO) {
+        funcionarioService.getFuncionarioById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado com ID: " + id));
+
+        // Atualiza os dados
+        funcionarioDTO.setId(id);
+        FuncionarioDTO updatedFuncionario = funcionarioService.updateFuncionario(funcionarioDTO);
+        return ResponseEntity.ok(updatedFuncionario);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        funcionarioService.deletar(id);
+    public ResponseEntity<Void> deleteFuncionario(@PathVariable Long id) {
+        if (funcionarioService.getFuncionarioById(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado com ID: " + id);
+        }
+        funcionarioService.deleteFuncionario(id);
         return ResponseEntity.noContent().build();
     }
 

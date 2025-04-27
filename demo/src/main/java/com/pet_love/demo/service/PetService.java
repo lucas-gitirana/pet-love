@@ -78,11 +78,7 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Pet> getPetById(Long id) {
-        return petRepository.findById(id);
-    }
-
-    public Optional<PetDTO> getPetByIdV2(Long id) {
+    public Optional<PetDTO> getPetById(Long id) {
         Optional<Pet> pet = petRepository.findById(id);
         return pet.map(PetService::convertToDTO);
     }
@@ -110,48 +106,7 @@ public class PetService {
         return convertToDTO(savedPet);
     }
 
-    public Pet updatePet(PetDTO dto) {
-        Pet pet = new Pet();
-        pet.setId(dto.getId());
-        pet.setNome(dto.getNome());
-        pet.setDataNascimento(dto.getDataNascimento());
-        pet.setObservacoes(dto.getObservacoes());
-        pet.setFoto(dto.getFoto());
-
-        // Buscar espécie e raça
-        /*Especie especie = especieRepository.findById(dto.getEspecieId())
-                .orElseThrow(() -> new RuntimeException("Espécie não encontrada"));
-        pet.setEspecie(especie);
-
-        if (dto.getRacaId() != null) {
-            Raca raca = racaRepository.findById(dto.getRacaId())
-                    .orElseThrow(() -> new RuntimeException("Raça não encontrada"));
-            pet.setRaca(raca);
-        }*/
-
-        //Apagamos todas as relações entre pet e dono antes de atualizar
-        for (PessoaPet pp : pet.getDonos()) {
-            pessoaPetRepository.delete(pp);
-        }
-
-        // Salvar pet primeiro para ter o ID
-        Pet petSalvo = petRepository.saveAndFlush(pet);
-
-        // Agora cria as novas ligações com os donos
-        List<PessoaPet> donos = dto.getDonos().stream().map(p -> {
-            Pessoa pessoa = pessoaRepository.findById(p.getPessoaId())
-                    .orElseThrow(() -> new RuntimeException("Pessoa não encontrada"));
-            return new PessoaPet(pessoa, petSalvo, p.isPrincipal());
-        }).toList();
-
-        // Salva PessoaPet
-        pessoaPetRepository.saveAll(donos);
-        petSalvo.setDonos(donos);
-
-        return petSalvo;
-    }
-
-    public PetDTO updatePetV2(PetDTO petDTO) {
+    public PetDTO updatePet(PetDTO petDTO) {
         Optional<Especie> especie = especieRepository.findById(petDTO.getEspecie().getId());
         especie.ifPresent(petDTO::setEspecie);
 
@@ -174,7 +129,6 @@ public class PetService {
         }
         savedPet.setDonos(donos);
         petRepository.save(savedPet);
-
 
         return convertToDTO(savedPet);
     }
