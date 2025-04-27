@@ -35,8 +35,8 @@ public class FuncionarioController {
         return new ResponseEntity<>(savedFuncionario, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FuncionarioDTO> atualizar(@PathVariable Long id, @RequestBody FuncionarioDTO funcionarioDTO) {
+    @PutMapping("/funcionarios/{id}")
+    public ResponseEntity<FuncionarioDTO> editFuncionario(@PathVariable Long id, @RequestBody FuncionarioDTO funcionarioDTO) {
         funcionarioService.getFuncionarioById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado com ID: " + id));
 
@@ -46,7 +46,7 @@ public class FuncionarioController {
         return ResponseEntity.ok(updatedFuncionario);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/funcionarios/{id}")
     public ResponseEntity<Void> deleteFuncionario(@PathVariable Long id) {
         if (funcionarioService.getFuncionarioById(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário não encontrado com ID: " + id);
