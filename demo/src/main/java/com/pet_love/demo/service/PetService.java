@@ -59,7 +59,6 @@ public class PetService {
      * @return
      */
     public static Pet convertFromDTO(PetDTO petDTO, PessoaRepository pessoaRepository) {
-
         Pet pet = new Pet();
         pet.setId(petDTO.getId());
         pet.setNome(petDTO.getNome());
@@ -103,17 +102,6 @@ public class PetService {
         raca.ifPresent(petDTO::setRaca);
 
         Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
-        return convertToDTO(savedPet);
-    }
-
-    public PetDTO updatePet(PetDTO petDTO) {
-        Optional<Especie> especie = especieRepository.findById(petDTO.getEspecie().getId());
-        especie.ifPresent(petDTO::setEspecie);
-
-        Optional<Raca> raca = racaRepository.findById(petDTO.getRaca().getId());
-        raca.ifPresent(petDTO::setRaca);
-
-        Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
         petRepository.flush();
 
         List<PessoaPet> donos = new ArrayList<>();
@@ -127,8 +115,46 @@ public class PetService {
                 donos.add(pessoaPet);
             }
         }
+
+        // Salvar os novos donos
+        pessoaPetRepository.saveAll(donos);
+
+        // Atualizar no objeto em memória também
         savedPet.setDonos(donos);
-        petRepository.save(savedPet);
+
+        return convertToDTO(savedPet);
+    }
+
+    public PetDTO updatePet(PetDTO petDTO) {
+        Optional<Especie> especie = especieRepository.findById(petDTO.getEspecie().getId());
+        especie.ifPresent(petDTO::setEspecie);
+
+        Optional<Raca> raca = racaRepository.findById(petDTO.getRaca().getId());
+        raca.ifPresent(petDTO::setRaca);
+
+        Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
+        petRepository.flush();
+
+        // Limpar os donos antigos no banco
+        pessoaPetRepository.deleteByPetId(savedPet.getId());
+
+        List<PessoaPet> donos = new ArrayList<>();
+        for (PessoaPetDTO pp : petDTO.getDonos()) {
+            Optional<Pessoa> pessoa = pessoaRepository.findById(pp.getPessoaId());
+            if (pessoa.isPresent()) {
+                PessoaPet pessoaPet = new PessoaPet();
+                pessoaPet.setPessoa(pessoa.get());
+                pessoaPet.setPet(savedPet);
+                pessoaPet.setPrincipal(pp.isPrincipal());
+                donos.add(pessoaPet);
+            }
+        }
+
+        // Salvar os novos donos
+        pessoaPetRepository.saveAll(donos);
+
+        // Atualizar no objeto em memória também
+        savedPet.setDonos(donos);
 
         return convertToDTO(savedPet);
     }
