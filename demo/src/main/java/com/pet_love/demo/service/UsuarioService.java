@@ -1,6 +1,5 @@
 package com.pet_love.demo.service;
 
-import com.pet_love.demo.config.PasswordEncoderConfig;
 import com.pet_love.demo.model.Pessoa;
 import com.pet_love.demo.model.Usuario;
 import com.pet_love.demo.model.dto.UsuarioDTO;
