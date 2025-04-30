@@ -37,7 +37,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/usuarios/{id}")
-    public ResponseEntity<UsuarioDTO> editUsuario (@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<UsuarioDTO> editUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         usuarioService.getUsuarioById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o id: " + id));
 

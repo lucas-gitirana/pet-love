@@ -64,7 +64,7 @@ public class UsuarioService {
         return usuario.map(UsuarioService::convertToDTO);
     }
 
-    public UsuarioDTO saveUsuario (UsuarioDTO usuarioDTO) {
+    public UsuarioDTO saveUsuario(UsuarioDTO usuarioDTO) {
         Usuario savedUsuario = usuarioRepository.save(convertFromDTO(usuarioDTO));
         return convertToDTO(savedUsuario);
     }
