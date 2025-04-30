@@ -2,7 +2,8 @@ package com.pet_love.demo.service;
 
 import com.pet_love.demo.model.Pessoa;
 import com.pet_love.demo.model.Usuario;
-import com.pet_love.demo.model.dto.UsuarioDTO;
+import com.pet_love.demo.model.dto.UsuarioCreateDTO;
+import com.pet_love.demo.model.dto.UsuarioResponseDTO;
 import com.pet_love.demo.repository.PessoaRepository;
 import com.pet_love.demo.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,52 +27,61 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public static UsuarioDTO convertToDTO(Usuario usuario) {
-        return new UsuarioDTO(
+    /**
+     * Método para converter um objeto da classe Usuario para UsuarioResponseDTO
+     * @param usuario
+     * @return
+     */
+    public static UsuarioResponseDTO convertToResponseDTO(Usuario usuario) {
+        return new UsuarioResponseDTO(
                 usuario.getId(),
                 usuario.getLogin(),
-                usuario.getSenha(),
                 usuario.getPerfil(),
                 usuario.getPessoa().getId()
         );
     }
 
-    public Usuario convertFromDTO(UsuarioDTO usuarioDTO) {
-        Pessoa pessoa = pessoaRepository.findById(usuarioDTO.getPessoaId())
-                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com o id: " + usuarioDTO.getPessoaId()));
+    /**
+     * Método para converter um objeto da classe UsuarioCreateDTO para Usuario
+     * @param usuarioCreateDTO
+     * @return
+     */
+    public Usuario convertFromCreateDTO(UsuarioCreateDTO usuarioCreateDTO) {
+        Pessoa pessoa = pessoaRepository.findById(usuarioCreateDTO.getPessoaId())
+                .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com o id: " + usuarioCreateDTO.getPessoaId()));
 
         Usuario usuario = new Usuario();
-        usuario.setId(usuarioDTO.getId());
-        usuario.setLogin(usuarioDTO.getLogin());
+        usuario.setId(usuarioCreateDTO.getId());
+        usuario.setLogin(usuarioCreateDTO.getLogin());
 
         // O PasswordEncoder codifica a senha, criando um hash único e irreversível
-        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        usuario.setSenha(passwordEncoder.encode(usuarioCreateDTO.getSenha()));
 
-        usuario.setPerfil(usuarioDTO.getPerfil());
+        usuario.setPerfil(usuarioCreateDTO.getPerfil());
         usuario.setPessoa(pessoa);
         return usuario;
     }
 
-    public List<UsuarioDTO> getAllUsuarios() {
+    public List<UsuarioResponseDTO> getAllUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios.stream()
-                .map(UsuarioService::convertToDTO)
+                .map(UsuarioService::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<UsuarioDTO> getUsuarioById(Long id) {
+    public Optional<UsuarioResponseDTO> getUsuarioById(Long id) {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
-        return usuario.map(UsuarioService::convertToDTO);
+        return usuario.map(UsuarioService::convertToResponseDTO);
     }
 
-    public UsuarioDTO saveUsuario(UsuarioDTO usuarioDTO) {
-        Usuario savedUsuario = usuarioRepository.save(convertFromDTO(usuarioDTO));
-        return convertToDTO(savedUsuario);
+    public UsuarioResponseDTO saveUsuario(UsuarioCreateDTO usuarioCreateDTO) {
+        Usuario savedUsuario = usuarioRepository.save(convertFromCreateDTO(usuarioCreateDTO));
+        return convertToResponseDTO(savedUsuario);
     }
 
-    public UsuarioDTO updateUsuario(UsuarioDTO usuarioDTO) {
-        Usuario savedUsuario = usuarioRepository.save(convertFromDTO(usuarioDTO));
-        return convertToDTO(savedUsuario);
+    public UsuarioResponseDTO updateUsuario(UsuarioCreateDTO usuarioCreateDTO) {
+        Usuario savedUsuario = usuarioRepository.save(convertFromCreateDTO(usuarioCreateDTO));
+        return convertToResponseDTO(savedUsuario);
     }
 
     public void deleteUsuario(Long id) {

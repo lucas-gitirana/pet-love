@@ -27,6 +27,11 @@ public class ConsultaService {
     @Autowired
     private PetRepository petRepository;
 
+    /**
+     * Método para converter um objeto da classe Consulta para ConsultaDTO
+     * @param consulta
+     * @return
+     */
     public static ConsultaDTO convertToDTO(Consulta consulta) {
         return new ConsultaDTO(
           consulta.getId(),
@@ -38,6 +43,11 @@ public class ConsultaService {
         );
     }
 
+    /**
+     * Método para converter um objeto da classe ConsultaDTO para Consulta
+     * @param consultaDTO
+     * @return
+     */
     public Consulta convertFromDTO(ConsultaDTO consultaDTO) {
         Funcionario funcionario = funcionarioRepository.findById(consultaDTO.getFuncionarioId())
                 .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado com o id: " + consultaDTO.getFuncionarioId()));

@@ -1,5 +1,6 @@
 package com.pet_love.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,7 @@ public class Usuario {
     private String login;
 
     @Column(name="usu_senha", nullable = false)
+    @JsonIgnore
     private String senha;
 
     @Column(name="usu_perfil", nullable = false)

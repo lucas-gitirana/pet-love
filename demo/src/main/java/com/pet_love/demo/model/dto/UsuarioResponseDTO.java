@@ -1,21 +1,17 @@
 package com.pet_love.demo.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class UsuarioDTO {
+public class UsuarioResponseDTO {
     private Long id;
     private String login;
-    private String senha;
     private int perfil;
     private Long pessoaId;
 
-    public UsuarioDTO() {
+    public UsuarioResponseDTO() {
     }
 
-    public UsuarioDTO(Long id, String login, String senha, int perfil, Long pessoaId) {
+    public UsuarioResponseDTO(Long id, String login, int perfil, Long pessoaId) {
         this.id = id;
         this.login = login;
-        this.senha = senha;
         this.perfil = perfil;
         this.pessoaId = pessoaId;
     }
@@ -34,14 +30,6 @@ public class UsuarioDTO {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 
     public int getPerfil() {
