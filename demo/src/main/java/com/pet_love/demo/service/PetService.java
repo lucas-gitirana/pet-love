@@ -58,7 +58,7 @@ public class PetService {
      * @param petDTO
      * @return
      */
-    public static Pet convertFromDTO(PetDTO petDTO, PessoaRepository pessoaRepository) {
+    public static Pet convertFromDTO(PetDTO petDTO) {
         Pet pet = new Pet();
         pet.setId(petDTO.getId());
         pet.setNome(petDTO.getNome());
@@ -101,7 +101,7 @@ public class PetService {
         Optional<Raca> raca = racaRepository.findById(petDTO.getRaca().getId());
         raca.ifPresent(petDTO::setRaca);
 
-        Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
+        Pet savedPet = petRepository.save(convertFromDTO(petDTO));
         petRepository.flush();
 
         List<PessoaPet> donos = new ArrayList<>();
@@ -132,7 +132,7 @@ public class PetService {
         Optional<Raca> raca = racaRepository.findById(petDTO.getRaca().getId());
         raca.ifPresent(petDTO::setRaca);
 
-        Pet savedPet = petRepository.save(convertFromDTO(petDTO, pessoaRepository));
+        Pet savedPet = petRepository.save(convertFromDTO(petDTO));
         petRepository.flush();
 
         // Limpar os donos antigos no banco
