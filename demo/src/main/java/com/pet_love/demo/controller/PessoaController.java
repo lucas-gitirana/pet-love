@@ -48,9 +48,22 @@ public class PessoaController{
 
     @DeleteMapping("/pessoas/{id}")
     public ResponseEntity<Void> deletePessoa(@PathVariable Long id) {
-        if (pessoaService.getPessoaById(id).isEmpty()) {
+        var pessoaOptional = pessoaService.getPessoaById(id);
+
+        if (pessoaOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa não encontrada com ID: " + id);
         }
+
+        var pessoa = pessoaOptional.get();
+
+        // Verifica se possui pets vinculados
+        if (pessoa.getPetsIds() != null && !pessoa.getPetsIds().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Não é possível excluir a pessoa, pois ela está vinculada a um ou mais pets."
+            );
+        }
+
         pessoaService.deletePessoa(id);
         return ResponseEntity.noContent().build();
     }

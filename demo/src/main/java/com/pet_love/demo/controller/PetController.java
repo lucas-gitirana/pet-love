@@ -61,10 +61,6 @@ public class PetController {
 
     @DeleteMapping("pets/{id}")
     public ResponseEntity<Void> deletePet(@PathVariable Long id) {
-        if (petService.getPetById(id).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pet não encontrado com ID: " + id);
-        }
-
         petService.deletePet(id);
         return ResponseEntity.noContent().build();
     }

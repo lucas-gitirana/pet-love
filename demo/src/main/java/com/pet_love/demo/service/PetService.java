@@ -6,7 +6,9 @@ import com.pet_love.demo.model.dto.PessoaPetDTO;
 import com.pet_love.demo.model.dto.PetDTO;
 import com.pet_love.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +162,18 @@ public class PetService {
     }
 
     public void deletePet(Long id) {
-        petRepository.deleteById(id);
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Pet não encontrado com ID: " + id));
+
+        // Verifica se o pet possui donos vinculados
+        if (pet.getDonos() != null && !pet.getDonos().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Não é possível excluir o pet, pois possui donos vinculados."
+            );
+        }
+
+        petRepository.delete(pet);
     }
 }
