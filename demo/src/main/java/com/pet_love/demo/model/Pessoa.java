@@ -18,7 +18,7 @@ public class Pessoa {
     @Column(name="pes_nome", nullable = false)
     private String nome;
 
-    @Column(name="pes_cpf", nullable = false)
+    @Column(name="pes_cpf", nullable = false, unique = true)
     private String cpf;
 
     @Column(name="pes_cidade")

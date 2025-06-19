@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 public class Funcionario extends Pessoa{
 
-    @Column(name="fun_crmv")
+    @Column(name="fun_crmv", unique = true)
     private String crmv;
 
     @Column(name="fun_funcao")
