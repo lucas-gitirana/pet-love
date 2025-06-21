@@ -1,5 +1,6 @@
 package com.pet_love.demo.controller;
 
+import com.pet_love.demo.model.dto.LoginDTO;
 import com.pet_love.demo.model.dto.UsuarioCreateDTO;
 import com.pet_love.demo.model.dto.UsuarioResponseDTO;
 import com.pet_love.demo.service.UsuarioService;
@@ -34,6 +35,13 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> addUsuario(@RequestBody UsuarioCreateDTO usuarioCreateDTO) {
         UsuarioResponseDTO savedUsuario = usuarioService.saveUsuario(usuarioCreateDTO);
         return new ResponseEntity<>(savedUsuario, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/usuarios/login")
+    public ResponseEntity<UsuarioResponseDTO> login(@RequestBody LoginDTO loginDTO) {
+        return usuarioService.autenticarUsuario(loginDTO.getLogin(), loginDTO.getSenha())
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login ou senha inválidos"));
     }
 
     @PutMapping("/usuarios/{id}")
