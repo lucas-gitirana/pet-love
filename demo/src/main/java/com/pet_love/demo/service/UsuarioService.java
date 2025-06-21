@@ -51,14 +51,25 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada com o id: " + usuarioCreateDTO.getPessoaId()));
 
         Usuario usuario = new Usuario();
-        usuario.setId(usuarioCreateDTO.getId());
-        usuario.setLogin(usuarioCreateDTO.getLogin());
 
-        // O PasswordEncoder codifica a senha, criando um hash único e irreversível
-        usuario.setSenha(passwordEncoder.encode(usuarioCreateDTO.getSenha()));
+        if (usuarioCreateDTO.getId() != null) {
+            usuario = usuarioRepository.findById(usuarioCreateDTO.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o id: " + usuarioCreateDTO.getId()));
 
-        usuario.setPerfil(usuarioCreateDTO.getPerfil());
-        usuario.setPessoa(pessoa);
+            usuario.setLogin(usuarioCreateDTO.getLogin());
+            usuario.setPerfil(usuarioCreateDTO.getPerfil());
+            usuario.setPessoa(pessoa);
+
+            if (usuarioCreateDTO.getSenha() != null && !usuarioCreateDTO.getSenha().trim().isEmpty()) {
+                usuario.setSenha(passwordEncoder.encode(usuarioCreateDTO.getSenha()));
+            }
+        } else {
+            usuario.setLogin(usuarioCreateDTO.getLogin());
+            usuario.setSenha(passwordEncoder.encode(usuarioCreateDTO.getSenha()));
+            usuario.setPerfil(usuarioCreateDTO.getPerfil());
+            usuario.setPessoa(pessoa);
+        }
+
         return usuario;
     }
 
@@ -86,5 +97,18 @@ public class UsuarioService {
 
     public void deleteUsuario(Long id) {
         usuarioRepository.deleteById(id);
+    }
+
+    public Optional<UsuarioResponseDTO> autenticarUsuario(String login, String senha) {
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findByLogin(login);
+
+        if (usuarioEncontrado.isPresent()) {
+            Usuario usuario = usuarioEncontrado.get();
+            if (passwordEncoder.matches(senha, usuario.getSenha())) {
+                return Optional.of(convertToResponseDTO(usuario));
+            }
+        }
+
+        return Optional.empty();
     }
 }
