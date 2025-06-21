@@ -61,6 +61,7 @@ public class UsuarioService {
             usuario.setPessoa(pessoa);
 
             if (usuarioCreateDTO.getSenha() != null && !usuarioCreateDTO.getSenha().trim().isEmpty()) {
+                // O PasswordEncoder codifica a senha, criando um hash único e irreversível
                 usuario.setSenha(passwordEncoder.encode(usuarioCreateDTO.getSenha()));
             }
         } else {
