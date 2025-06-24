@@ -96,6 +96,22 @@ public class PetService {
                 .map(pessoaPet -> PessoaService.convertToDTO(pessoaPet.getPessoa()));
     }
 
+    public List<PetDTO> buscarPetsSemDono() {
+        // Todos os pets cadastrados
+        List<Pet> todosPets = petRepository.findAll();
+
+        // Pets que têm alguma associação com uma pessoa
+        List<Pet> petsComDono = pessoaPetRepository.findAll().stream()
+                .map(PessoaPet::getPet)
+                .collect(Collectors.toList());
+
+        // Filtra os pets que não estão na lista de pets com dono
+        return todosPets.stream()
+                .filter(pet -> !petsComDono.contains(pet))
+                .map(PetService::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public PetDTO savePet(PetDTO petDTO) {
         Optional<Especie> especie = especieRepository.findById(petDTO.getEspecie().getId());
         especie.ifPresent(petDTO::setEspecie);

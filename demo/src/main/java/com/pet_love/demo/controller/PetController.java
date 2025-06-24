@@ -42,6 +42,12 @@ public class PetController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Dono não encontrado com ID: " + id));
     }
 
+    @GetMapping("/pets/sem-dono")
+    public ResponseEntity<List<PetDTO>> listarPetsSemDono() {
+        List<PetDTO> pets = petService.buscarPetsSemDono();
+        return ResponseEntity.ok(pets);
+    }
+
     @PostMapping("/pets")
     public ResponseEntity<PetDTO> addPet(@RequestBody PetDTO dto) {
         PetDTO savedPet = petService.savePet(dto);
