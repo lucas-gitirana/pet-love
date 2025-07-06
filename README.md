@@ -1,13 +1,75 @@
-# pet-love
 
-Este repositório contém o projeto back-end do sistema Pet Love, desenvolvido para as disciplinas de Projeto Integrador II e Desenvolvimento Web, do Centro de Educação Superior do Alto Vale do Itajaí.
+# 🐾 Pet Love
 
-Acadêmicos: 
-- Erick Augusto Warmling (55PIN2 e 55DSW)
-- Lucas Emanoel Gitirana (55PIN2 e 55DSW)
-- Marco Antônio Garlini Possamai (55PIN2 e 55DSW)
-- Francisco Gilmario Alves Gomes (55DSW)
+**Pet Love** é uma aplicação Java Spring Boot voltada à gestão de clínicas veterinárias. A plataforma permite o cadastro e gerenciamento de usuários, pets, espécies, raças, consultas e solicitações de adoção, com autenticação de acesso e separação por perfis.
 
-Para testar os endpoints desenvolvidos, disponibilizamos a collection [pet-love api.postman_collection.json](https://github.com/user-attachments/files/20276015/pet-love.api.postman_collection.json), que pode ser importada para o Postman. 
+---
 
-![image](https://github.com/user-attachments/assets/3fd4f4c4-7af9-408c-ad95-258a20fdf36d)
+## Tecnologias Utilizadas
+
+- **Java 17+**
+- **Spring Boot**
+  - Spring Web
+  - Spring Security
+  - Spring Data JPA
+- **Maven**
+- **PostgreSQL**
+- **DTO Pattern**
+- **Camadas MVC**
+
+---
+
+## ⚙️ Como Executar o Projeto
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/lucas-gitirana/pet-love.git
+cd pet-love/demo
+```
+
+### 2. Compile e rode o projeto
+
+```bash
+./mvnw spring-boot:run
+```
+
+Ou, se estiver usando uma IDE (como IntelliJ ou Eclipse):
+
+- Importe o projeto como **Maven Project**
+- Rode a classe `DemoApplication.java`
+
+### 3. Acesse no navegador
+
+```
+http://localhost:8080
+```
+
+> A API REST estará disponível em rotas como `/pets`, `/usuarios`, `/solicitacoes`, etc.
+
+---
+
+## 🗃️ Scripts de Banco de Dados
+
+Dentro da pasta `scripts/` você encontrará:
+
+- `limpa-banco.sql`: Limpa os dados da base
+- `povoamento-racas-especies.sql`: Insere espécies e raças pré-definidas
+
+---
+
+## Funcionalidades
+
+- Cadastro e login de usuários
+- Gerenciamento de pets
+- Cadastro de pessoas e funcionários
+- Registro de consultas
+- Solicitação de adoção
+- Autenticação e controle de acesso
+
+---
+
+## 👨‍💻 Autores
+
+Desenvolvido por: 
+[Lucas Gitirana](https://github.com/lucas-gitirana); [Erick Augusto Warmling](https://github.com/lucas-gitirana); [Marco Antonio Garlini Possamai](https://github.com/lucas-gitirana)
