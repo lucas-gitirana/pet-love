@@ -1,17 +1,21 @@
 
-# 🐾 Pet Love - Front End
+# 🐾 Pet Love
 
-**Pet Love Front End** é uma aplicação React criada com Vite para a interface da gestão de clínicas veterinárias. Ela permite interação com a API backend para cadastro e gerenciamento de usuários, pets, adoções, consultas e autenticação.
+**Pet Love** é uma aplicação Java Spring Boot voltada à gestão de clínicas veterinárias. A plataforma permite o cadastro e gerenciamento de usuários, pets, espécies, raças, consultas e solicitações de adoção, com autenticação de acesso e separação por perfis.
 
 ---
 
 ## Tecnologias Utilizadas
 
-- **React 18+** com JSX
-- **Vite**
-- **CSS Modules / CSS global**
-- **Axios**
-- Estrutura modularizada com componentes React
+- **Java 17+**
+- **Spring Boot**
+  - Spring Web
+  - Spring Security
+  - Spring Data JPA
+- **Maven**
+- **PostgreSQL**
+- **DTO Pattern**
+- **Camadas MVC**
 
 ---
 
@@ -20,42 +24,52 @@
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/ErickWarmling/pet-love-front-end.git
-cd pet-love-front-end/pet-love
+git clone https://github.com/lucas-gitirana/pet-love.git
+cd pet-love/demo
 ```
 
-### 2. Instale as dependências
+### 2. Compile e rode o projeto
 
 ```bash
-npm install
+./mvnw spring-boot:run
 ```
 
-### 3. Rode em modo desenvolvimento
+Ou, se estiver usando uma IDE (como IntelliJ ou Eclipse):
+
+- Importe o projeto como **Maven Project**
+- Rode a classe `DemoApplication.java`
+
+### 3. Acesse no navegador
 
 ```
-npm run dev
+http://localhost:8080
 ```
 
-### 4. Acesse no Navegador
+> A API REST estará disponível em rotas como `/pets`, `/usuarios`, `/solicitacoes`, etc.
 
-```
-http://localhost:5137
-```
+---
+
+## 🗃️ Scripts de Banco de Dados
+
+Dentro da pasta `scripts/` você encontrará:
+
+- `limpa-banco.sql`: Limpa os dados da base
+- `povoamento-racas-especies.sql`: Insere espécies e raças pré-definidas
 
 ---
 
 ## Funcionalidades
 
-- Interface de login e autenticação
-- Gerenciamento de pets, adoções, consultas e usuários
-- Componentes modulares e reutilizáveis
-- Comunicação com API backend para persistência
-- Modal de confirmação para ações críticas
-- Navegação entre páginas via React Router
+- Cadastro e login de usuários
+- Gerenciamento de pets
+- Cadastro de pessoas e funcionários
+- Registro de consultas
+- Solicitação de adoção
+- Autenticação e controle de acesso
 
 ---
 
 ## 👨‍💻 Autores
 
 Desenvolvido por: 
-[Lucas Gitirana](https://github.com/lucas-gitirana); [Erick Augusto Warmling](https://github.com/lucas-gitirana); [Marco Antonio Garlini Possamai](https://github.com/lucas-gitirana)
+[Lucas Gitirana](https://github.com/lucas-gitirana); [Erick Augusto Warmling](https://github.com/ErickWarmling); [Marco Antonio Garlini Possamai](https://github.com/MarcoPossamai)
