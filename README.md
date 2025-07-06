@@ -1,21 +1,17 @@
 
-# 🐾 Pet Love
+# 🐾 Pet Love - Front End
 
-**Pet Love** é uma aplicação Java Spring Boot voltada à gestão de clínicas veterinárias. A plataforma permite o cadastro e gerenciamento de usuários, pets, espécies, raças, consultas e solicitações de adoção, com autenticação de acesso e separação por perfis.
+**Pet Love Front End** é uma aplicação React criada com Vite para a interface da gestão de clínicas veterinárias. Ela permite interação com a API backend para cadastro e gerenciamento de usuários, pets, adoções, consultas e autenticação.
 
 ---
 
 ## Tecnologias Utilizadas
 
-- **Java 17+**
-- **Spring Boot**
-  - Spring Web
-  - Spring Security
-  - Spring Data JPA
-- **Maven**
-- **PostgreSQL**
-- **DTO Pattern**
-- **Camadas MVC**
+- **React 18+** com JSX
+- **Vite**
+- **CSS Modules / CSS global**
+- **Axios**
+- Estrutura modularizada com componentes React
 
 ---
 
@@ -24,48 +20,38 @@
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/lucas-gitirana/pet-love.git
-cd pet-love/demo
+git clone https://github.com/ErickWarmling/pet-love-front-end.git
+cd pet-love-front-end/pet-love
 ```
 
-### 2. Compile e rode o projeto
+### 2. Instale as dependências
 
 ```bash
-./mvnw spring-boot:run
+npm install
 ```
 
-Ou, se estiver usando uma IDE (como IntelliJ ou Eclipse):
-
-- Importe o projeto como **Maven Project**
-- Rode a classe `DemoApplication.java`
-
-### 3. Acesse no navegador
+### 3. Rode em modo desenvolvimento
 
 ```
-http://localhost:8080
+npm run dev
 ```
 
-> A API REST estará disponível em rotas como `/pets`, `/usuarios`, `/solicitacoes`, etc.
+### 4. Acesse no Navegador
 
----
-
-## 🗃️ Scripts de Banco de Dados
-
-Dentro da pasta `scripts/` você encontrará:
-
-- `limpa-banco.sql`: Limpa os dados da base
-- `povoamento-racas-especies.sql`: Insere espécies e raças pré-definidas
+```
+http://localhost:5137
+```
 
 ---
 
 ## Funcionalidades
 
-- Cadastro e login de usuários
-- Gerenciamento de pets
-- Cadastro de pessoas e funcionários
-- Registro de consultas
-- Solicitação de adoção
-- Autenticação e controle de acesso
+- Interface de login e autenticação
+- Gerenciamento de pets, adoções, consultas e usuários
+- Componentes modulares e reutilizáveis
+- Comunicação com API backend para persistência
+- Modal de confirmação para ações críticas
+- Navegação entre páginas via React Router
 
 ---
 
